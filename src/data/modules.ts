@@ -61,22 +61,9 @@ export const dmrpSessions = [
     id: 'dmrp',
     name: 'DMRP',
     type: 'DMRP Program',
-    description: 'Discipline, Merit, Responsibility Program',
+    description: 'DexConnect Meeting and Retraining Program',
     sessions: [
       { id: 'dmrp-session', name: 'DMRP Session', type: 'dmrp' }
-    ]
-  }
-]
-
-// DexConnect and Retraining as combined session
-export const specialSessions = [
-  {
-    id: 'dexconnect-retraining',
-    name: 'DexConnect Meetup & Retraining Program',
-    type: 'Special Programs',
-    description: 'Combined DexConnect meetups and retraining sessions',
-    sessions: [
-      { id: 'dexconnect-retraining', name: 'DexConnect & Retraining', type: 'dexconnect-retraining' }
     ]
   }
 ]

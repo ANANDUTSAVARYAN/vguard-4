@@ -40,7 +40,6 @@ export const EnhancedFeedbackOverview: React.FC = () => {
   
   const isOutsideClass = moduleId === 'outside-class'
   const isDMRP = moduleId === 'dmrp'
-  const isDexConnectRetraining = moduleId === 'dexconnect-retraining'
 
   useEffect(() => {
     fetchFeedbacks()
@@ -160,7 +159,6 @@ export const EnhancedFeedbackOverview: React.FC = () => {
                   <div className="text-sm text-red-300">
                     {isOutsideClass ? 'Outside Class Feedback' : 
                      isDMRP ? 'DMRP Program' :
-                     isDexConnectRetraining ? 'DexConnect & Retraining' :
                      `${module?.name} - ${sessionType}`}
                   </div>
                 </div>
@@ -191,7 +189,6 @@ export const EnhancedFeedbackOverview: React.FC = () => {
                 className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg border ${
                   isOutsideClass ? 'bg-yellow-600/80 text-white hover:bg-yellow-500/80 shadow-yellow-500/25 border-yellow-500/30' :
                   isDMRP ? 'bg-purple-600/80 text-white hover:bg-purple-500/80 shadow-purple-500/25 border-purple-500/30' :
-                  isDexConnectRetraining ? 'bg-green-600/80 text-white hover:bg-green-500/80 shadow-green-500/25 border-green-500/30' :
                   'bg-red-600/80 text-white hover:bg-red-500/80 shadow-red-500/25 border-red-500/30'
                 }`}
                 whileHover={{ scale: 1.05, y: -2 }}
@@ -313,7 +310,6 @@ export const EnhancedFeedbackOverview: React.FC = () => {
                     className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 border ${
                       isOutsideClass ? 'bg-yellow-600/80 text-white hover:bg-yellow-500/80 border-yellow-500/30' :
                       isDMRP ? 'bg-purple-600/80 text-white hover:bg-purple-500/80 border-purple-500/30' :
-                      isDexConnectRetraining ? 'bg-green-600/80 text-white hover:bg-green-500/80 border-green-500/30' :
                       'bg-red-600/80 text-white hover:bg-red-500/80 border-red-500/30'
                     }`}
                     whileHover={{ scale: 1.05 }}
@@ -397,7 +393,6 @@ export const EnhancedFeedbackOverview: React.FC = () => {
               sessionCategory={
                 isOutsideClass ? 'outside-class' :
                 isDMRP ? 'dmrp' :
-                isDexConnectRetraining ? 'dexconnect-retraining' :
                 'module'
               }
               editingFeedback={editingFeedback}

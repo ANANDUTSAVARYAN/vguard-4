@@ -199,7 +199,7 @@ export const EnhancedClassTypeSelection: React.FC = () => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               {/* DMRP Section */}
-              <div className="text-center">
+              <div className="text-center mb-8">
                 <motion.div 
                   className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center mb-4 mx-auto border border-purple-400/30"
                   whileHover={{ rotate: 360 }}
@@ -208,10 +208,10 @@ export const EnhancedClassTypeSelection: React.FC = () => {
                   <GraduationCap className="w-8 h-8 text-purple-400" />
                 </motion.div>
                 <h3 className="text-2xl font-bold text-white mb-2">DMRP</h3>
-                <p className="text-gray-300 mb-4 text-sm">Discipline, Merit, Responsibility Program</p>
+                <p className="text-gray-300 mb-4 text-sm">DexConnect Meeting and Retraining Program</p>
                 
                 {dmrpSessions.map((session) => (
-                  <Link key={session.id} to={`/candidate/${candidateId}/feedback/${session.id}/dmrp`}>
+                  <Link key={session.id} to={`/candidate/${candidateId}/feedback/dmrp/dmrp`}>
                     <motion.button
                       className="w-full mb-4 px-6 py-3 bg-gradient-to-r from-purple-600/80 to-purple-700/80 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 border border-purple-500/30 transition-all duration-300"
                       whileHover={{ 
@@ -237,48 +237,7 @@ export const EnhancedClassTypeSelection: React.FC = () => {
               </div>
 
               {/* Divider */}
-              <div className="border-t border-gray-600/30"></div>
-
-              {/* DexConnect & Retraining Section */}
-              <div className="text-center">
-                <motion.div 
-                  className="w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mb-4 mx-auto border border-green-400/30"
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <Users className="w-8 h-8 text-green-400" />
-                </motion.div>
-                <h3 className="text-2xl font-bold text-white mb-2">DexConnect & Retraining</h3>
-                <p className="text-gray-300 mb-4 text-sm">Combined meetups and retraining sessions</p>
-                
-                {specialSessions.map((session) => (
-                  <Link key={session.id} to={`/candidate/${candidateId}/feedback/${session.id}/dexconnect-retraining`}>
-                    <motion.button
-                      className="w-full px-6 py-3 bg-gradient-to-r from-green-600/80 to-green-700/80 text-white font-bold rounded-xl shadow-lg shadow-green-500/25 border border-green-500/30 transition-all duration-300"
-                      whileHover={{ 
-                        scale: 1.05, 
-                        y: -3,
-                        boxShadow: "0 20px 40px rgba(34, 197, 94, 0.3)"
-                      }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <div className="flex items-center justify-center gap-3">
-                        <Users className="w-5 h-5" />
-                        <span>Access DexConnect & Retraining</span>
-                        <motion.div
-                          animate={{ x: [0, 5, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          →
-                        </motion.div>
-                      </div>
-                    </motion.button>
-                  </Link>
-                ))}
-              </div>
-
-              {/* Divider */}
-              <div className="border-t border-gray-600/30"></div>
+              <div className="border-t border-gray-600/30 mb-8"></div>
 
               {/* Outside Class Section */}
               <div className="text-center">
