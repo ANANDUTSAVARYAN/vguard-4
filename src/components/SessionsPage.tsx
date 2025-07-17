@@ -1,11 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckSquare, Square, Plus, Edit3, Trash2, Palette, Save, X } from 'lucide-react'
 import { VanguardScene } from './3D/VanguardScene'
-import { defaultSessions, Session, ChecklistItem } from '../data/sessions'
+import { supabase } from '../lib/supabase'
+
+interface ChecklistItem {
+  id: string
+  text: string
+  completed: boolean
+  color: 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'indigo' | 'gray'
+  created_at: string
+  updated_at: string
+}
+
+interface Session {
+  id: string
+  name: string
+  description: string
+  checklist: ChecklistItem[]
+  created_at: string
+  updated_at: string
+}
 
 export const SessionsPage: React.FC = () => {
-  const [sessions, setSessions] = useState<Session[]>(defaultSessions)
+  const [sessions, setSessions] = useState<Session[]>([])
+  const [loading, setLoading] = useState(true)
   const [showAddSession, setShowAddSession] = useState(false)
   const [editingSession, setEditingSession] = useState<Session | null>(null)
   const [showColorPicker, setShowColorPicker] = useState<string | null>(null)
@@ -26,51 +45,88 @@ export const SessionsPage: React.FC = () => {
     { name: 'Gray', value: 'gray', bg: 'bg-gray-500', text: 'text-gray-400' }
   ]
 
+  useEffect(() => {
+    fetchSessions()
+  }, [])
+
+  const fetchSessions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sessions')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      const formattedSessions: Session[] = (data || []).map(session => ({
+        ...session,
+        checklist: session.checklist || []
+      }))
+
+      setSessions(formattedSessions)
+    } catch (error) {
+      console.error('Error fetching sessions:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const updateSession = async (sessionId: string, updates: Partial<Session>) => {
+    try {
+      const { error } = await supabase
+        .from('sessions')
+        .update(updates)
+        .eq('id', sessionId)
+
+      if (error) throw error
+      await fetchSessions()
+    } catch (error) {
+      console.error('Error updating session:', error)
+    }
+  }
+
   const toggleChecklistItem = (sessionId: string, itemId: string) => {
-    setSessions(prev => prev.map(session => {
-      if (session.id === sessionId) {
+    const session = sessions.find(s => s.id === sessionId)
+    if (!session) return
+
+    const updatedChecklist = session.checklist.map(item => {
+      if (item.id === itemId) {
         return {
-          ...session,
-          checklist: session.checklist.map(item => {
-            if (item.id === itemId) {
-              return {
-                ...item,
-                completed: !item.completed,
-                updated_at: new Date().toISOString()
-              }
-            }
-            return item
-          })
+          ...item,
+          completed: !item.completed,
+          updated_at: new Date().toISOString()
         }
       }
-      return session
-    }))
+      return item
+    })
+
+    updateSession(sessionId, { checklist: updatedChecklist })
   }
 
   const changeItemColor = (sessionId: string, itemId: string, color: ChecklistItem['color']) => {
-    setSessions(prev => prev.map(session => {
-      if (session.id === sessionId) {
+    const session = sessions.find(s => s.id === sessionId)
+    if (!session) return
+
+    const updatedChecklist = session.checklist.map(item => {
+      if (item.id === itemId) {
         return {
-          ...session,
-          checklist: session.checklist.map(item => {
-            if (item.id === itemId) {
-              return {
-                ...item,
-                color,
-                updated_at: new Date().toISOString()
-              }
-            }
-            return item
-          })
+          ...item,
+          color,
+          updated_at: new Date().toISOString()
         }
       }
-      return session
-    }))
+      return item
+    })
+
+    updateSession(sessionId, { checklist: updatedChecklist })
     setShowColorPicker(null)
   }
 
   const addChecklistItem = (sessionId: string, text: string) => {
     if (!text.trim()) return
+
+    const session = sessions.find(s => s.id === sessionId)
+    if (!session) return
 
     const newItem: ChecklistItem = {
       id: `item-${Date.now()}`,
@@ -81,50 +137,52 @@ export const SessionsPage: React.FC = () => {
       updated_at: new Date().toISOString()
     }
 
-    setSessions(prev => prev.map(session => {
-      if (session.id === sessionId) {
-        return {
-          ...session,
-          checklist: [...session.checklist, newItem],
-          updated_at: new Date().toISOString()
-        }
-      }
-      return session
-    }))
+    const updatedChecklist = [...session.checklist, newItem]
+    updateSession(sessionId, { checklist: updatedChecklist })
   }
 
   const deleteChecklistItem = (sessionId: string, itemId: string) => {
-    setSessions(prev => prev.map(session => {
-      if (session.id === sessionId) {
-        return {
-          ...session,
-          checklist: session.checklist.filter(item => item.id !== itemId),
-          updated_at: new Date().toISOString()
-        }
-      }
-      return session
-    }))
+    const session = sessions.find(s => s.id === sessionId)
+    if (!session) return
+
+    const updatedChecklist = session.checklist.filter(item => item.id !== itemId)
+    updateSession(sessionId, { checklist: updatedChecklist })
   }
 
-  const addSession = () => {
+  const addSession = async () => {
     if (!newSession.name.trim()) return
 
-    const session: Session = {
-      id: `session-${Date.now()}`,
-      name: newSession.name,
-      description: newSession.description,
-      checklist: [],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
+    try {
+      const { error } = await supabase
+        .from('sessions')
+        .insert([{
+          name: newSession.name,
+          description: newSession.description,
+          checklist: []
+        }])
 
-    setSessions(prev => [...prev, session])
-    setNewSession({ name: '', description: '' })
-    setShowAddSession(false)
+      if (error) throw error
+
+      await fetchSessions()
+      setNewSession({ name: '', description: '' })
+      setShowAddSession(false)
+    } catch (error) {
+      console.error('Error adding session:', error)
+    }
   }
 
-  const deleteSession = (sessionId: string) => {
-    setSessions(prev => prev.filter(s => s.id !== sessionId))
+  const deleteSession = async (sessionId: string) => {
+    try {
+      const { error } = await supabase
+        .from('sessions')
+        .delete()
+        .eq('id', sessionId)
+
+      if (error) throw error
+      await fetchSessions()
+    } catch (error) {
+      console.error('Error deleting session:', error)
+    }
   }
 
   const getColorClasses = (color: ChecklistItem['color']) => {
