@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, User, GraduationCap, MessageSquare, ChevronUp, ChevronDown, BookOpen, Users } from 'lucide-react'
 import { candidatesWithClasses } from '../data/classes'
-import { modules } from '../data/modules'
+import { modules, dmrpSessions, specialSessions } from '../data/modules'
 import { VanguardScene } from './3D/VanguardScene'
 
 export const EnhancedClassTypeSelection: React.FC = () => {
@@ -101,7 +101,7 @@ export const EnhancedClassTypeSelection: React.FC = () => {
             initial="hidden"
             animate="visible"
           >
-            {/* Inside Class */}
+            {/* Inside Class - Modules */}
             <motion.div 
               className="bg-black/30 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-red-500/20"
               variants={itemVariants}
@@ -116,8 +116,8 @@ export const EnhancedClassTypeSelection: React.FC = () => {
                 >
                   <GraduationCap className="w-10 h-10 text-blue-400" />
                 </motion.div>
-                <h3 className="text-3xl font-bold text-white mb-3">Inside Class</h3>
-                <p className="text-gray-300 text-lg">Structured module-based learning sessions</p>
+                <h3 className="text-3xl font-bold text-white mb-3">Core Modules</h3>
+                <p className="text-gray-300 text-lg">Structured module-based learning with Lecture + Social Hour</p>
               </div>
 
               <div className="space-y-4 max-h-96 overflow-y-auto">
@@ -191,52 +191,127 @@ export const EnhancedClassTypeSelection: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Outside Class */}
+            {/* DMRP and Special Programs */}
             <motion.div 
-              className="bg-black/30 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-green-500/20"
+              className="bg-black/30 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-purple-500/20 space-y-8"
               variants={itemVariants}
               whileHover={{ scale: 1.02, y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <div className="text-center mb-10">
+              {/* DMRP Section */}
+              <div className="text-center">
                 <motion.div 
-                  className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-3xl flex items-center justify-center mb-6 mx-auto border border-green-400/30"
+                  className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center mb-4 mx-auto border border-purple-400/30"
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <MessageSquare className="w-10 h-10 text-green-400" />
+                  <GraduationCap className="w-8 h-8 text-purple-400" />
                 </motion.div>
-                <h3 className="text-3xl font-bold text-white mb-3">Outside Class</h3>
-                <p className="text-gray-300 mb-8 text-lg">General feedback and observations</p>
+                <h3 className="text-2xl font-bold text-white mb-2">DMRP</h3>
+                <p className="text-gray-300 mb-4 text-sm">Discipline, Merit, Responsibility Program</p>
                 
+                {dmrpSessions.map((session) => (
+                  <Link key={session.id} to={`/candidate/${candidateId}/feedback/${session.id}/dmrp`}>
+                    <motion.button
+                      className="w-full mb-4 px-6 py-3 bg-gradient-to-r from-purple-600/80 to-purple-700/80 text-white font-bold rounded-xl shadow-lg shadow-purple-500/25 border border-purple-500/30 transition-all duration-300"
+                      whileHover={{ 
+                        scale: 1.05, 
+                        y: -3,
+                        boxShadow: "0 20px 40px rgba(147, 51, 234, 0.3)"
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <div className="flex items-center justify-center gap-3">
+                        <GraduationCap className="w-5 h-5" />
+                        <span>Access DMRP Feedback</span>
+                        <motion.div
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          →
+                        </motion.div>
+                      </div>
+                    </motion.button>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-600/30"></div>
+
+              {/* DexConnect & Retraining Section */}
+              <div className="text-center">
                 <motion.div 
-                  className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-2xl p-6 mb-8 border border-green-500/20 backdrop-blur-sm"
-                  whileHover={{ scale: 1.02 }}
+                  className="w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mb-4 mx-auto border border-green-400/30"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
                 >
-                  <Users className="w-8 h-8 text-green-400 mx-auto mb-3" />
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    Provide feedback on the candidate's behavior, interactions, and performance outside of structured class sessions.
-                  </p>
+                  <Users className="w-8 h-8 text-green-400" />
                 </motion.div>
+                <h3 className="text-2xl font-bold text-white mb-2">DexConnect & Retraining</h3>
+                <p className="text-gray-300 mb-4 text-sm">Combined meetups and retraining sessions</p>
+                
+                {specialSessions.map((session) => (
+                  <Link key={session.id} to={`/candidate/${candidateId}/feedback/${session.id}/dexconnect-retraining`}>
+                    <motion.button
+                      className="w-full px-6 py-3 bg-gradient-to-r from-green-600/80 to-green-700/80 text-white font-bold rounded-xl shadow-lg shadow-green-500/25 border border-green-500/30 transition-all duration-300"
+                      whileHover={{ 
+                        scale: 1.05, 
+                        y: -3,
+                        boxShadow: "0 20px 40px rgba(34, 197, 94, 0.3)"
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <div className="flex items-center justify-center gap-3">
+                        <Users className="w-5 h-5" />
+                        <span>Access DexConnect & Retraining</span>
+                        <motion.div
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          →
+                        </motion.div>
+                      </div>
+                    </motion.button>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-600/30"></div>
+
+              {/* Outside Class Section */}
+              <div className="text-center">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-2xl flex items-center justify-center mb-4 mx-auto border border-yellow-400/30"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <MessageSquare className="w-8 h-8 text-yellow-400" />
+                </motion.div>
+                <h3 className="text-2xl font-bold text-white mb-2">Outside Class</h3>
+                <p className="text-gray-300 mb-4 text-sm">General feedback and observations</p>
                 
                 <Link to={`/candidate/${candidateId}/feedback/outside-class/social`}>
                   <motion.button
-                    className="inline-flex items-center gap-4 bg-gradient-to-r from-green-600/80 to-green-700/80 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/25 border border-green-500/30 transition-all duration-300"
+                    className="w-full px-6 py-3 bg-gradient-to-r from-yellow-600/80 to-yellow-700/80 text-white font-bold rounded-xl shadow-lg shadow-yellow-500/25 border border-yellow-500/30 transition-all duration-300"
                     whileHover={{ 
                       scale: 1.05, 
                       y: -3,
-                      boxShadow: "0 20px 40px rgba(34, 197, 94, 0.3)"
+                      boxShadow: "0 20px 40px rgba(234, 179, 8, 0.3)"
                     }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <MessageSquare className="w-6 h-6" />
-                    <span className="text-lg">Access Outside Class Feedback</span>
-                    <motion.div
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      →
-                    </motion.div>
+                    <div className="flex items-center justify-center gap-3">
+                      <MessageSquare className="w-5 h-5" />
+                      <span>Access Outside Class Feedback</span>
+                      <motion.div
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        →
+                      </motion.div>
+                    </div>
                   </motion.button>
                 </Link>
               </div>

@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, User, MessageSquare, Plus, Edit3, Trash2, TrendingUp, Award, Target } from 'lucide-react'
 import { candidatesWithClasses } from '../data/classes'
-import { modules } from '../data/modules'
+import { modules, dmrpSessions, specialSessions } from '../data/modules'
 import { supabase } from '../lib/supabase'
 import { EnhancedFeedbackModal } from './EnhancedFeedbackModal'
 import { VanguardScene } from './3D/VanguardScene'
@@ -32,8 +32,15 @@ export const EnhancedFeedbackOverview: React.FC = () => {
   const [editingFeedback, setEditingFeedback] = useState<Feedback | null>(null)
   
   const candidate = candidatesWithClasses.find(c => c.id === candidateId)
-  const module = modules.find(m => m.id === moduleId)
+  
+  // Find the module/session from different sources
+  const module = modules.find(m => m.id === moduleId) || 
+                dmrpSessions.find(s => s.id === moduleId) ||
+                specialSessions.find(s => s.id === moduleId)
+  
   const isOutsideClass = moduleId === 'outside-class'
+  const isDMRP = moduleId === 'dmrp'
+  const isDexConnectRetraining = moduleId === 'dexconnect-retraining'
 
   useEffect(() => {
     fetchFeedbacks()
@@ -151,7 +158,10 @@ export const EnhancedFeedbackOverview: React.FC = () => {
                 <div className="text-right">
                   <div className="font-bold text-white text-lg">{candidate.name}</div>
                   <div className="text-sm text-red-300">
-                    {isOutsideClass ? 'Outside Class Feedback' : `${module?.name} - ${sessionType}`}
+                    {isOutsideClass ? 'Outside Class Feedback' : 
+                     isDMRP ? 'DMRP Program' :
+                     isDexConnectRetraining ? 'DexConnect & Retraining' :
+                     `${module?.name} - ${sessionType}`}
                   </div>
                 </div>
               </div>
@@ -178,10 +188,11 @@ export const EnhancedFeedbackOverview: React.FC = () => {
               </div>
               <motion.button
                 onClick={() => setShowModal(true)}
-                className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg ${
-                  isOutsideClass 
-                    ? 'bg-green-600/80 text-white hover:bg-green-500/80 shadow-green-500/25 border border-green-500/30' 
-                    : 'bg-red-600/80 text-white hover:bg-red-500/80 shadow-red-500/25 border border-red-500/30'
+                className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg border ${
+                  isOutsideClass ? 'bg-yellow-600/80 text-white hover:bg-yellow-500/80 shadow-yellow-500/25 border-yellow-500/30' :
+                  isDMRP ? 'bg-purple-600/80 text-white hover:bg-purple-500/80 shadow-purple-500/25 border-purple-500/30' :
+                  isDexConnectRetraining ? 'bg-green-600/80 text-white hover:bg-green-500/80 shadow-green-500/25 border-green-500/30' :
+                  'bg-red-600/80 text-white hover:bg-red-500/80 shadow-red-500/25 border-red-500/30'
                 }`}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -299,10 +310,11 @@ export const EnhancedFeedbackOverview: React.FC = () => {
                   <p className="text-gray-400 mb-8 text-lg">No feedback available yet</p>
                   <motion.button
                     onClick={() => setShowModal(true)}
-                    className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
-                      isOutsideClass 
-                        ? 'bg-green-600/80 text-white hover:bg-green-500/80 border border-green-500/30' 
-                        : 'bg-red-600/80 text-white hover:bg-red-500/80 border border-red-500/30'
+                    className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 border ${
+                      isOutsideClass ? 'bg-yellow-600/80 text-white hover:bg-yellow-500/80 border-yellow-500/30' :
+                      isDMRP ? 'bg-purple-600/80 text-white hover:bg-purple-500/80 border-purple-500/30' :
+                      isDexConnectRetraining ? 'bg-green-600/80 text-white hover:bg-green-500/80 border-green-500/30' :
+                      'bg-red-600/80 text-white hover:bg-red-500/80 border-red-500/30'
                     }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -382,7 +394,12 @@ export const EnhancedFeedbackOverview: React.FC = () => {
               candidateName={candidate.name}
               moduleId={moduleId || 'outside-class'}
               sessionType={sessionType || 'social'}
-              isOutsideClass={isOutsideClass}
+              sessionCategory={
+                isOutsideClass ? 'outside-class' :
+                isDMRP ? 'dmrp' :
+                isDexConnectRetraining ? 'dexconnect-retraining' :
+                'module'
+              }
               editingFeedback={editingFeedback}
               onClose={() => {
                 setShowModal(false)

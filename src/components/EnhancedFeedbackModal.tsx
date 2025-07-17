@@ -10,7 +10,7 @@ interface EnhancedFeedbackModalProps {
   candidateName: string
   moduleId: string
   sessionType: string
-  isOutsideClass: boolean
+  sessionCategory: 'module' | 'dmrp' | 'dexconnect-retraining' | 'outside-class'
   editingFeedback?: {
     id: string
     feedback_text: string
@@ -27,7 +27,7 @@ export const EnhancedFeedbackModal: React.FC<EnhancedFeedbackModalProps> = ({
   candidateName,
   moduleId,
   sessionType,
-  isOutsideClass,
+  sessionCategory,
   editingFeedback,
   onClose,
   onSuccess,
@@ -409,10 +409,11 @@ export const EnhancedFeedbackModal: React.FC<EnhancedFeedbackModalProps> = ({
                   <motion.button
                     onClick={handleBulkSubmit}
                     disabled={isSubmitting}
-                    className={`flex-1 px-6 py-4 font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 ${
-                      isOutsideClass
-                        ? 'bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-200'
-                        : 'bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-200'
+                    className={`flex-1 px-6 py-4 font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg ${
+                      sessionCategory === 'outside-class' ? 'bg-yellow-600 text-white hover:bg-yellow-700 shadow-yellow-200' :
+                      sessionCategory === 'dmrp' ? 'bg-purple-600 text-white hover:bg-purple-700 shadow-purple-200' :
+                      sessionCategory === 'dexconnect-retraining' ? 'bg-green-600 text-white hover:bg-green-700 shadow-green-200' :
+                      'bg-red-600 text-white hover:bg-red-700 shadow-red-200'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                     variants={buttonVariants}
                     whileHover="hover"
@@ -576,10 +577,12 @@ export const EnhancedFeedbackModal: React.FC<EnhancedFeedbackModalProps> = ({
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`flex-1 px-6 py-4 font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 ${
-                      isOutsideClass
-                        ? 'bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-200'
-                        : 'bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-200'
+                    className={`flex-1 px-6 py-4 font-semibold rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg ${
+                      sessionCategory === 'outside-class' ? 'bg-yellow-600 text-white hover:bg-yellow-700 shadow-yellow-200' :
+                      sessionCategory === 'dmrp' ? 'bg-purple-600 text-white hover:bg-purple-700 shadow-purple-200' :
+                      sessionCategory === 'dexconnect-retraining' ? 'bg-green-600 text-white hover:bg-green-700 shadow-green-200' :
+                      'bg-red-600 text-white hover:bg-red-700 shadow-red-200'
+                      'bg-red-600 text-white hover:bg-red-700 shadow-red-200'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                     variants={buttonVariants}
                     whileHover="hover"
