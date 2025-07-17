@@ -582,7 +582,6 @@ export const EnhancedFeedbackModal: React.FC<EnhancedFeedbackModalProps> = ({
                       sessionCategory === 'dmrp' ? 'bg-purple-600 text-white hover:bg-purple-700 shadow-purple-200' :
                       sessionCategory === 'dexconnect-retraining' ? 'bg-green-600 text-white hover:bg-green-700 shadow-green-200' :
                       'bg-red-600 text-white hover:bg-red-700 shadow-red-200'
-                      'bg-red-600 text-white hover:bg-red-700 shadow-red-200'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                     variants={buttonVariants}
                     whileHover="hover"
